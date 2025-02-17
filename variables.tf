@@ -6,19 +6,27 @@ variable "cidr" {
   type = string
 }
 
-variable "vpc_name"{
-   type = string
+variable "cidr_igw" {
+  type = string
+}
+
+variable "vpc_name" {
+  type = string
 }
 
 variable "profile" {
-    type = string
+  type = string
 }
 
-variable "subnet_cidr_1" {
-    type = string
+
+variable "availability_zones" {
+  type = list(string)
 }
 
-variable "subnet_name_1" {
-    type = string
-  
+variable "public_subnet_cidrs" {
+  type = list(string)
+}
+
+variable "private_subnet_cidrs" {
+  type = list(string)
 }

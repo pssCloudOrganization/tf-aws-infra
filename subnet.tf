@@ -1,9 +1,24 @@
-resource "aws_subnet" "main" {
-  vpc_id     = aws_vpc.my_vpc.id
-  cidr_block = var.subnet_cidr_1
-  depends_on = [ aws_vpc.my_vpc ]
+resource "aws_subnet" "public_subnets" {
+
+  count                   = length(var.public_subnet_cidrs)
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = var.availability_zones[count.index]
+  map_public_ip_on_launch = true
 
   tags = {
-    Name = var.subnet_name_1
+    Name = "${var.vpc_name}-public-subnet-${count.index + 1}"
+  }
+}
+
+resource "aws_subnet" "private_subnets" {
+
+  count             = length(var.private_subnet_cidrs)
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = var.private_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
+
+  tags = {
+    Name = "${var.vpc_name}-private-subnet-${count.index + 1}"
   }
 }
