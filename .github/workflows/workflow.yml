@@ -7,7 +7,6 @@ on:
 
 jobs:
   test:
-    name: tf-aws-infra formatting and validation
     runs-on: ubuntu-latest
     
     steps:
