@@ -1,0 +1,30 @@
+name: Terraform Formatting and Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: tf-aws-infra formatting and validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.10.4
+
+    - name: Terraform Init
+      run: terraform init 
+
+    - name: Terraform Format Check
+      run: terraform fmt -check -recursive
+      continue-on-error: false
+
+    - name: Terraform Validate
+      run: terraform validate
