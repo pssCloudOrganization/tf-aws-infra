@@ -20,3 +20,5 @@
 - Run the following command to destroy infrastructure:
 
 `terraform destroy`
+
+use tf vars where necessary
