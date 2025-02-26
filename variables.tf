@@ -17,6 +17,9 @@ variable "vpc_name" {
 # variable "availability_zones" {
 #   type = list(string)
 # }
+variable "ami_id" {
+  type = string
+}
 
 variable "public_subnet_cidrs" {
   type = list(string)
@@ -24,4 +27,12 @@ variable "public_subnet_cidrs" {
 
 variable "private_subnet_cidrs" {
   type = list(string)
+}
+
+variable "app_port" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
 }
