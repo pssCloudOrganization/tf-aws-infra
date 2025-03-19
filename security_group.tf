@@ -3,7 +3,6 @@ resource "aws_security_group" "ec2_sg" {
   description = "Security group for webapp EC2 instances"
   vpc_id      = aws_vpc.my_vpc.id
 
-
   ingress {
     from_port   = 22
     to_port     = 22
@@ -41,5 +40,29 @@ resource "aws_security_group" "ec2_sg" {
 
   tags = {
     Name = "application-security-group"
+  }
+}
+
+resource "aws_security_group" "db_sg" {
+  name        = "database-security-group"
+  description = "Security group for RDS instances"
+  vpc_id      = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port       = var.db_port
+    to_port         = var.db_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "database-security-group"
   }
 }
