@@ -14,9 +14,6 @@ variable "vpc_name" {
   type = string
 }
 
-# variable "availability_zones" {
-#   type = list(string)
-# }
 variable "ami_id" {
   type = string
 }
@@ -34,5 +31,46 @@ variable "app_port" {
 }
 
 variable "instance_type" {
+  type = string
+}
+
+variable "db_port" {
+  type = number
+
+}
+
+variable "db_storage_size" {
+  type = number
+}
+variable "db_password" {
+  type        = string
+  description = "Password for the RDS database"
+  sensitive   = true
+}
+
+variable "db_identifier" {
+  type = string
+}
+
+variable "db_engine" {
+  type = string
+}
+
+variable "db_version" {
+  type = string
+}
+variable "db_instance_class" {
+  type = string
+}
+
+variable "db_name" {
+  type = string
+}
+
+variable "db_username" {
+  type = string
+}
+
+variable "db_family" {
   type = string
 }
