@@ -32,6 +32,8 @@ resource "aws_instance" "app_server" {
 
     # Start the service now that .env exists
     sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s
+    sudo systemctl restart amazon-cloudwatch-agent
+    sudo systemctl enable amazon-cloudwatch-agent
     systemctl start csye6225
   EOF
 
