@@ -25,8 +25,13 @@ resource "aws_instance" "app_server" {
     # Set correct ownership
     chown csye6225:csye6225 /opt/csye6225/webapp/.env
     chmod 644 /opt/csye6225/webapp/.env
+
     
+    chown -R csye6225:csye6225 /var/log/webapp/
+    chmod -R 755 /var/log/webapp/
+
     # Start the service now that .env exists
+    sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s
     systemctl start csye6225
   EOF
 
