@@ -13,7 +13,7 @@
 
 #   user_data = <<-EOF
 #     #!/bin/bash
-    
+
 #     # Creating .env file
 #     cat > /opt/csye6225/webapp/.env << 'ENVFILE'
 #     DATABASE_URL="mysql://${aws_db_instance.rds_instance.username}:${var.db_password}@${aws_db_instance.rds_instance.address}/${aws_db_instance.rds_instance.db_name}"
@@ -21,12 +21,12 @@
 #     S3_BUCKET_NAME="${aws_s3_bucket.app_bucket.bucket}"
 #     AWS_REGION="${var.region}"
 #     ENVFILE
-    
+
 #     # Set correct ownership
 #     chown csye6225:csye6225 /opt/csye6225/webapp/.env
 #     chmod 644 /opt/csye6225/webapp/.env
 
-    
+
 #     chown -R csye6225:csye6225 /var/log/webapp/
 #     chmod -R 755 /var/log/webapp/
 

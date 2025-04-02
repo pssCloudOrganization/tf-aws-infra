@@ -76,11 +76,11 @@ variable "db_family" {
 }
 
 variable "key_name" {
-  type        = string
+  type = string
 }
 
 variable "domain_name" {
-  type        = string
+  type = string
 }
 
 variable "min_size" {

@@ -1,8 +1,8 @@
 resource "aws_launch_template" "app_launch_template" {
-  name                   = "csye6225_asg"
-  image_id               = var.ami_id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
+  name          = "csye6225_asg"
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_profile.name
@@ -61,14 +61,14 @@ resource "aws_launch_template" "app_launch_template" {
 }
 
 resource "aws_autoscaling_group" "app_asg" {
-  name                = "app-autoscaling-group"
-  min_size            = var.min_size
-  max_size            = var.max_size
-  desired_capacity    = var.desired_capacity
-  default_cooldown    = var.default_cooldown
+  name                    = "app-autoscaling-group"
+  min_size                = var.min_size
+  max_size                = var.max_size
+  desired_capacity        = var.desired_capacity
+  default_cooldown        = var.default_cooldown
   default_instance_warmup = 300
-  vpc_zone_identifier = aws_subnet.public_subnets[*].id
-  target_group_arns   = [aws_lb_target_group.app_tg.arn]
+  vpc_zone_identifier     = aws_subnet.public_subnets[*].id
+  target_group_arns       = [aws_lb_target_group.app_tg.arn]
 
   launch_template {
     id      = aws_launch_template.app_launch_template.id
