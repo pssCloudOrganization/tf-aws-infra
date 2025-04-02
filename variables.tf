@@ -74,3 +74,35 @@ variable "db_username" {
 variable "db_family" {
   type = string
 }
+
+variable "key_name" {
+  type = string
+}
+
+variable "domain_name" {
+  type = string
+}
+
+variable "min_size" {
+  type = number
+}
+
+variable "max_size" {
+  type = number
+}
+
+variable "desired_capacity" {
+  type = number
+}
+
+variable "default_cooldown" {
+  type = number
+}
+
+variable "scale_up_threshold" {
+  type = number
+}
+
+variable "scale_down_threshold" {
+  type = number
+}
