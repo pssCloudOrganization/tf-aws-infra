@@ -19,6 +19,8 @@ resource "aws_launch_template" "app_launch_template" {
       volume_size           = 25
       volume_type           = "gp2"
       delete_on_termination = true
+      encrypted             = true
+      kms_key_id            = aws_kms_key.ec2_key.arn
     }
   }
 
@@ -27,15 +29,21 @@ resource "aws_launch_template" "app_launch_template" {
   }
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    
-    # Creating .env file
-    cat > /opt/csye6225/webapp/.env << 'ENVFILE'
-    DATABASE_URL="mysql://${aws_db_instance.rds_instance.username}:${var.db_password}@${aws_db_instance.rds_instance.address}/${aws_db_instance.rds_instance.db_name}"
-    TEST_DATABASE_URL="mysql://${aws_db_instance.rds_instance.username}:${var.db_password}@${aws_db_instance.rds_instance.address}/test_${aws_db_instance.rds_instance.db_name}"
+    yum update -y || apt-get update -y
+    yum install -y unzip curl || apt-get install -y unzip curl
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
+    export PATH=$PATH:/usr/local/bin
+    # Get DB password from Secrets Manager
+    DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${aws_secretsmanager_secret.db_password.id} --region ${var.region} --query SecretString --output text)
+
+    cat > /opt/csye6225/webapp/.env << ENVFILE
+    DATABASE_URL="mysql://${aws_db_instance.rds_instance.username}:$DB_PASSWORD@${aws_db_instance.rds_instance.address}/${aws_db_instance.rds_instance.db_name}"
+    TEST_DATABASE_URL="mysql://${aws_db_instance.rds_instance.username}:$DB_PASSWORD@${aws_db_instance.rds_instance.address}/test_${aws_db_instance.rds_instance.db_name}"
     S3_BUCKET_NAME="${aws_s3_bucket.app_bucket.bucket}"
     AWS_REGION="${var.region}"
     ENVFILE
-    
     # Set correct ownership
     chown csye6225:csye6225 /opt/csye6225/webapp/.env
     chmod 644 /opt/csye6225/webapp/.env
@@ -61,14 +69,15 @@ resource "aws_launch_template" "app_launch_template" {
 }
 
 resource "aws_autoscaling_group" "app_asg" {
-  name                    = "app-autoscaling-group"
-  min_size                = var.min_size
-  max_size                = var.max_size
-  desired_capacity        = var.desired_capacity
-  default_cooldown        = var.default_cooldown
-  default_instance_warmup = 300
-  vpc_zone_identifier     = aws_subnet.public_subnets[*].id
-  target_group_arns       = [aws_lb_target_group.app_tg.arn]
+  name                      = "app-autoscaling-group"
+  min_size                  = var.min_size
+  max_size                  = var.max_size
+  desired_capacity          = var.desired_capacity
+  default_cooldown          = var.default_cooldown
+  default_instance_warmup   = 300
+  health_check_grace_period = 300
+  vpc_zone_identifier       = aws_subnet.public_subnets[*].id
+  target_group_arns         = [aws_lb_target_group.app_tg.arn]
 
   launch_template {
     id      = aws_launch_template.app_launch_template.id

@@ -34,14 +34,17 @@ resource "aws_db_instance" "rds_instance" {
   allocated_storage      = var.db_storage_size
   db_name                = var.db_name
   username               = var.db_username
-  password               = var.db_password
+  password               = random_password.db_password.result
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   parameter_group_name   = aws_db_parameter_group.db_parameter_group.name
   publicly_accessible    = false
   skip_final_snapshot    = true
   multi_az               = false
+  storage_encrypted      = true
+  kms_key_id             = aws_kms_key.rds_key.arn
 
+  depends_on = [aws_kms_key.rds_key]
   tags = {
     Name = "RDS Instance"
   }

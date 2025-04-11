@@ -64,3 +64,40 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   name = "EC2-S3-Profile"
   role = aws_iam_role.ec2_s3_access_role.name
 }
+
+
+resource "aws_iam_policy" "secrets_access_policy" {
+  name        = "Secrets-Access-Policy"
+  description = "Policy to allow EC2 instance and Terraform to manage Secrets Manager secrets"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "SecretsManagerActions",
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:TagResource"
+        ],
+        Resource = "*"
+      },
+      {
+        Sid    = "KMSDecryptForSecrets",
+        Effect = "Allow",
+        Action = [
+          "kms:Decrypt"
+        ],
+        Resource = aws_kms_key.secrets_key.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "secrets_access_attachment" {
+  role       = aws_iam_role.ec2_s3_access_role.name
+  policy_arn = aws_iam_policy.secrets_access_policy.arn
+}
