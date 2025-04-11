@@ -106,3 +106,8 @@ variable "scale_up_threshold" {
 variable "scale_down_threshold" {
   type = number
 }
+
+variable "acm_certificate_arn" {
+  description = "ARN of the pre-imported ACM certificate."
+  type        = string
+}

@@ -20,3 +20,8 @@
 - Run the following command to destroy infrastructure:
 
 `terraform destroy`
+
+# SSL Certificate 
+
+- Run the below command to import ssl certificate:
+`aws acm import-certificate --certificate file://certificate.pem --private-key file://private-key.pem --certificate-chain file://certificate-chain.pem --region <your-region>`
